@@ -1,31 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, X } from "lucide-react";
-import { getServices, removeServices, type Service } from "@/lib/serviceStorage";
+import { removeServices, type Service } from "@/lib/serviceStorage";
 import ServiceCard from "./ServiceCard";
 
-export default function ServiceGrid() {
-  const [services, setServices] = useState<Service[]>([]);
+interface ServiceGridProps {
+  services: Service[];
+  onServicesChange: () => void;
+}
+
+export default function ServiceGrid({ services, onServicesChange }: ServiceGridProps) {
   const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set());
   const [selectionMode, setSelectionMode] = useState(false);
-
-  useEffect(() => {
-    setServices(getServices());
-    
-    const handleStorageChange = () => {
-      setServices(getServices());
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('servicesUpdated', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('servicesUpdated', handleStorageChange);
-    };
-  }, []);
 
   const handleServiceSelection = (serviceId: string, selected: boolean) => {
     setSelectedServices(prev => {
@@ -48,7 +36,7 @@ export default function ServiceGrid() {
     
     setSelectedServices(new Set());
     setSelectionMode(false);
-    setServices(getServices());
+    onServicesChange();
     
     window.dispatchEvent(new Event('servicesUpdated'));
   };
@@ -60,25 +48,41 @@ export default function ServiceGrid() {
 
   if (services.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground text-lg mb-4">No services added yet</p>
-        <p className="text-sm text-muted-foreground">
-          Add your first service using the form above
-        </p>
+      <div className="text-center py-16">
+        <div className="max-w-md mx-auto space-y-6">
+          <div className="w-24 h-24 mx-auto rounded-full bg-muted/50 flex items-center justify-center">
+            <div className="text-4xl">📦</div>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold">No services yet</h3>
+            <p className="text-muted-foreground">
+              Your services will appear here once you add them. Start by adding your first service above.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full">
-      {selectionMode && (
-        <div className="space-y-3 mb-6">
-          <div className="flex items-center justify-between bg-muted/50 rounded-lg p-4 gap-4">
-            <span className="text-sm font-medium flex-1">
-              {selectedServices.size} service{selectedServices.size !== 1 ? 's' : ''} selected
-            </span>
+    <div className="w-full">      {selectionMode && (
+        <div className="space-y-3 mb-8">
+          <div className="flex items-center justify-between bg-gradient-to-r from-destructive/10 to-destructive/5 border border-destructive/20 rounded-lg p-4 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center">
+                <Trash2 className="w-5 h-5 text-destructive" />
+              </div>
+              <div>
+                <p className="font-medium text-destructive">
+                  {selectedServices.size} service{selectedServices.size !== 1 ? 's' : ''} selected
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Ready for deletion
+                </p>
+              </div>
+            </div>
             <div className="flex gap-2 flex-shrink-0">
-              <Button 
+              <Button
                 variant="outline" 
                 size="sm" 
                 onClick={handleCancelSelection}
@@ -100,16 +104,16 @@ export default function ServiceGrid() {
             </div>
           </div>
           {selectedServices.size === 0 && (
-            <div className="text-center p-2">
+            <div className="text-center p-4 bg-muted/30 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                Tap cards to select them for deletion
+                Long-press or right-click on service cards to select them for deletion
               </p>
             </div>
           )}
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {services.map((service) => (
           <ServiceCard
             key={service.id}
