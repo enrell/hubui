@@ -180,7 +180,7 @@ The easiest way to deploy HubUI is using our pre-built Docker image:
 
 ```bash
 # Using Docker Compose (Recommended)
-curl -o docker-compose.yml https://raw.githubusercontent.com/enrellsa/hubui/main/docker-compose.production.yml
+curl -o docker-compose.yml https://raw.githubusercontent.com/enrell/hubui/main/docker-compose.production.yml
 docker-compose up -d
 ```
 
@@ -202,7 +202,7 @@ For development or custom builds:
 
 ```bash
 # Clone the repository
-git clone https://github.com/enrellsa/hubui.git
+git clone https://github.com/enrell/hubui.git
 cd hubui
 
 # Build and run with Docker Compose
@@ -215,7 +215,7 @@ For local development and testing:
 
 ```bash
 # Clone the repository
-git clone https://github.com/enrellsa/hubui.git
+git clone https://github.com/enrell/hubui.git
 cd hubui
 
 # Install dependencies
@@ -265,7 +265,7 @@ To contribute to HubUI:
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/yourusername/hubui.git
+git clone https://github.com/enrell/hubui.git
 cd hubui
 
 # Install dependencies

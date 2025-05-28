@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.next
+.env*.local
+.vercel
+.DS_Store
+*.tgz
+*.tar.gz
+Dockerfile
+.dockerignore
+README.md
+.git
+.gitignore
+.eslintrc.json
+.env.example

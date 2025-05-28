@@ -1,7 +1,8 @@
 services:
   hubui:
-    build: .
-    image: hubui:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
