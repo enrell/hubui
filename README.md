@@ -7,7 +7,7 @@
 An open-source, service aggregator dashboard.<br/>
 Centralize all your local web services in one interface with iframes embedding.<br/>
 
-**English** · [Official Site](https://github.com/enrell/hubui) · [Changelog](https://github.com/enrell/hubui/releases) · [Documentation](https://github.com/enrell/hubui#-getting-started) · [Feedback](https://github.com/enrell/hubui/issues)
+**English** · [Official Site](https://github.com/enrellsa/hubui) · [Changelog](https://github.com/enrellsa/hubui/releases) · [Documentation](https://github.com/enrellsa/hubui#-getting-started) · [Feedback](https://github.com/enrellsa/hubui/issues)
 
 <!-- SHIELD GROUP -->
 
@@ -30,7 +30,7 @@ Centralize all your local web services in one interface with iframes embedding.<
 
 <sup>Your personal service hub. Built for simplicity and elegance.</sup>
 
-![HubUI Overview](https://github.com/user-attachments/assets/hubui-overview-placeholder)
+![HubUI Overview](./public/hubui-screenshot.png)
 
 </div>
 
@@ -82,9 +82,8 @@ Built with Next.js 15, TypeScript, and Tailwind CSS, HubUI offers a fast, respon
 
 ## ✨ Features
 
-### `1` Service Management
+### `1` Service Management 🔧
 
-![Service Management](https://github.com/user-attachments/assets/service-management-placeholder)
 
 Easily add, organize, and manage your web services with an intuitive interface:
 
@@ -95,9 +94,7 @@ Easily add, organize, and manage your web services with an intuitive interface:
 
 [![][back-to-top]](#readme-top)
 
-### `2` Secure Iframe Integration
-
-![Iframe Integration](https://github.com/user-attachments/assets/iframe-integration-placeholder)
+### `2` Secure Iframe Integration 🖼️
 
 Access your services securely within HubUI without leaving the dashboard:
 
@@ -108,9 +105,7 @@ Access your services securely within HubUI without leaving the dashboard:
 
 [![][back-to-top]](#readme-top)
 
-### `3` Local Storage
-
-![Local Storage](https://github.com/user-attachments/assets/local-storage-placeholder)
+### `3` Local Storage 💾
 
 Your data stays with you - no external servers required:
 
@@ -121,9 +116,7 @@ Your data stays with you - no external servers required:
 
 [![][back-to-top]](#readme-top)
 
-### `4` Dark/Light Theme
-
-![Theme Support](https://github.com/user-attachments/assets/theme-support-placeholder)
+### `4` Dark/Light Theme 🌗
 
 Beautiful interface that adapts to your preferences:
 
@@ -134,9 +127,7 @@ Beautiful interface that adapts to your preferences:
 
 [![][back-to-top]](#readme-top)
 
-### `5` Responsive Design
-
-![Responsive Design](https://github.com/user-attachments/assets/responsive-design-placeholder)
+### `5` Responsive Design 📱
 
 Perfect experience across all devices:
 
@@ -147,9 +138,7 @@ Perfect experience across all devices:
 
 [![][back-to-top]](#readme-top)
 
-### `6` Modern UI Components
-
-![Modern UI](https://github.com/user-attachments/assets/modern-ui-placeholder)
+### `6` Modern UI Components ✨
 
 Built with cutting-edge design principles:
 
@@ -179,84 +168,67 @@ Beyond the core features, HubUI includes:
 
 </div>
 
-## 🚀 Quick Start
-
-Get HubUI running in minutes:
-
-1. **Add Your First Service**
-   - Enter a service name (e.g., "GitHub")
-   - Provide the URL (e.g., "https://github.com")
-   - Click "Add Service"
-
-2. **Access Your Services**
-   - Click on service cards in the dashboard
-   - Use the navigation bar for quick access
-   - Services load in secure iframes
-
-3. **Manage Your Collection**
-   - Long-press or right-click cards to select
-   - Use the delete button for bulk removal
-   - Configure themes in the settings page
-
-<div align="right">
-
-[![][back-to-top]](#readme-top)
-
-</div>
-
-## 🛳 Deployment
+## 🛳 Setup
 
 HubUI can be deployed in multiple ways to suit your needs.
 
-### `A` Deploying with Vercel
+### 🐳 Quick Deploy with Docker (Recommended)
 
-The easiest way to deploy HubUI is using Vercel's platform:
+#### Using Docker Hub Image
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fenrell%2Fhubui&project-name=hubui&repository-name=hubui)
+The easiest way to deploy HubUI is using our pre-built Docker image:
 
-1. Click the "Deploy with Vercel" button above
-2. Connect your GitHub account
-3. Deploy and access your personal HubUI instance
+```bash
+# Using Docker Compose (Recommended)
+curl -o docker-compose.yml https://raw.githubusercontent.com/enrellsa/hubui/main/docker-compose.production.yml
+docker-compose up -d
+```
 
-### `B` Deploying with Docker
+```bash
+# Or using Docker Run
+docker run -d \
+  --name hubui \
+  -p 3000:3000 \
+  -e NODE_ENV=production \
+  --restart unless-stopped \
+  enrellsa/hubui:latest
+```
 
-For self-hosting with Docker:
+Visit [http://localhost:3000](http://localhost:3000) to access HubUI.
+
+#### Building from Source
+
+For development or custom builds:
 
 ```bash
 # Clone the repository
-git clone https://github.com/enrell/hubui.git
+git clone https://github.com/enrellsa/hubui.git
 cd hubui
 
-# Build the Docker image
-docker build -t hubui .
-
-# Run the container
-docker run -p 3000:3000 hubui
+# Build and run with Docker Compose
+docker-compose up -d
 ```
 
-### `C` Local Development
+### 💻 Local Development
 
 For local development and testing:
 
 ```bash
 # Clone the repository
-git clone https://github.com/enrell/hubui.git
+git clone https://github.com/enrellsa/hubui.git
 cd hubui
 
 # Install dependencies
-npm install
-# or
-yarn install
-# or
-pnpm install
+bun i
 
 # Start the development server
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+bun run dev
 ```
+
+````bash
+# Building
+bun run build
+````
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -297,32 +269,19 @@ git clone https://github.com/yourusername/hubui.git
 cd hubui
 
 # Install dependencies
-pnpm install
+bun i
 
 # Start development server with Turbopack
-pnpm dev
+bun dev
 
 # Run linting
-pnpm lint
+bun lint
 
 # Build for production
-pnpm build
-```
+bun run build
 
-### Project Structure
-
-```
-src/
-├── app/                 # Next.js App Router pages
-│   ├── config/         # Configuration page
-│   ├── service/        # Service iframe pages
-│   └── layout.tsx      # Root layout
-├── components/         # React components
-│   ├── ui/            # Reusable UI components
-│   └── ...            # Feature components
-├── contexts/          # React contexts
-├── lib/               # Utility functions
-└── types/             # TypeScript type definitions
+# Start the production server
+bun run start
 ```
 
 <div align="right">
@@ -335,8 +294,8 @@ src/
 
 We welcome contributions of all types! Here's how you can help:
 
-- 🐛 **Bug Reports**: Found an issue? [Open a bug report](https://github.com/enrell/hubui/issues/new?template=bug_report.md)
-- 💡 **Feature Requests**: Have an idea? [Suggest a feature](https://github.com/enrell/hubui/issues/new?template=feature_request.md)
+- 🐛 **Bug Reports**: Found an issue? [Open a bug report](https://github.com/enrellsa/hubui/issues/new?template=bug_report.md)
+- 💡 **Feature Requests**: Have an idea? [Suggest a feature](https://github.com/enrellsa/hubui/issues/new?template=feature_request.md)
 - 📝 **Documentation**: Help improve our docs
 - 🔧 **Code**: Submit pull requests for bug fixes or new features
 
@@ -368,25 +327,25 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 <div align="center">
 
-**Built with ❤️ by the HubUI community**
+**Built with ❤️**
 
-[⭐ Star us on GitHub](https://github.com/enrell/hubui) • [🐛 Report Bug](https://github.com/enrell/hubui/issues) • [💡 Request Feature](https://github.com/enrell/hubui/issues)
+[⭐ Star on GitHub](https://github.com/enrellsa/hubui) • [🐛 Report Bug](https://github.com/enrellsa/hubui/issues) • [💡 Request Feature](https://github.com/enrellsa/hubui/issues)
 
 </div>
 
 <!-- LINK GROUP -->
 
 [back-to-top]: https://img.shields.io/badge/-BACK_TO_TOP-151515?style=flat-square
-[github-release-shield]: https://img.shields.io/github/v/release/enrell/hubui?color=369eff&labelColor=black&logo=github&style=flat-square
-[github-release-link]: https://github.com/enrell/hubui/releases
-[github-stars-shield]: https://img.shields.io/github/stars/enrell/hubui?color=ffcb47&labelColor=black&style=flat-square
-[github-stars-link]: https://github.com/enrell/hubui/network/stargazers
-[github-forks-shield]: https://img.shields.io/github/forks/enrell/hubui?color=8ae8ff&labelColor=black&style=flat-square
-[github-forks-link]: https://github.com/enrell/hubui/network/members
-[github-issues-shield]: https://img.shields.io/github/issues/enrell/hubui?color=ff80eb&labelColor=black&style=flat-square
-[github-issues-link]: https://github.com/enrell/hubui/issues
+[github-release-shield]: https://img.shields.io/github/v/release/enrellsa/hubui?color=369eff&labelColor=black&logo=github&style=flat-square
+[github-release-link]: https://github.com/enrellsa/hubui/releases
+[github-stars-shield]: https://img.shields.io/github/stars/enrellsa/hubui?color=ffcb47&labelColor=black&style=flat-square
+[github-stars-link]: https://github.com/enrellsa/hubui/network/stargazers
+[github-forks-shield]: https://img.shields.io/github/forks/enrellsa/hubui?color=8ae8ff&labelColor=black&style=flat-square
+[github-forks-link]: https://github.com/enrellsa/hubui/network/members
+[github-issues-shield]: https://img.shields.io/github/issues/enrellsa/hubui?color=ff80eb&labelColor=black&style=flat-square
+[github-issues-link]: https://github.com/enrellsa/hubui/issues
 [github-license-shield]: https://img.shields.io/badge/license-MIT-white?labelColor=black&style=flat-square
-[github-license-link]: https://github.com/enrell/hubui/blob/main/LICENSE
+[github-license-link]: https://github.com/enrellsa/hubui/blob/main/LICENSE
 [typescript-shield]: https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white&labelColor=black
 [typescript-link]: https://www.typescriptlang.org/
 [nextjs-shield]: https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white&labelColor=black
