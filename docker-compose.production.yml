@@ -1,7 +1,6 @@
 services:
   hubui:
-    build: .
-    image: hubui:latest
+    image: enrellsa/hubui:latest
     ports:
       - "3000:3000"
     environment:

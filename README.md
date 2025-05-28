@@ -7,7 +7,7 @@
 An open-source, service aggregator dashboard.<br/>
 Centralize all your local web services in one interface with iframes embedding.<br/>
 
-**English** · [Official Site](https://github.com/enrellsa/hubui) · [Changelog](https://github.com/enrellsa/hubui/releases) · [Documentation](https://github.com/enrellsa/hubui#-getting-started) · [Feedback](https://github.com/enrellsa/hubui/issues)
+**English** · [Official Repository](https://github.com/enrellsa/hubui) · [Docker Hub](https://hub.docker.com/r/enrellsa/hubui) · [Changelog](https://github.com/enrellsa/hubui/releases) · [Documentation](https://github.com/enrellsa/hubui#-getting-started) · [Feedback](https://github.com/enrellsa/hubui/issues)
 
 <!-- SHIELD GROUP -->
 
@@ -53,6 +53,7 @@ Centralize all your local web services in one interface with iframes embedding.<
   - [`A` Deploying with Vercel](#a-deploying-with-vercel)
   - [`B` Deploying with Docker](#b-deploying-with-docker)
   - [`C` Local Development](#c-local-development)
+  - [`D` Production Deployment](#d-production-deployment)
 - [🧩 Tech Stack](#-tech-stack)
 - [⌨️ Development](#️-development)
 - [🤝 Contributing](#-contributing)
@@ -155,10 +156,12 @@ Beyond the core features, HubUI includes:
 
 - [x] 🚀 **Lightning Fast**: Built with Next.js 15 and modern optimization techniques
 - [x] 🔒 **Security Focused**: Secure iframe sandboxing and CSP headers
+- [x] 🐳 **Docker Ready**: Official Docker image available on Docker Hub
 - [x] 📱 **PWA Ready**: Install as a progressive web app
 - [x] 🎨 **Customizable**: Easy theming and component customization
 - [x] 🔧 **Type Safe**: Full TypeScript support for reliability
 - [x] 📊 **Performance Optimized**: Server-side rendering and lazy loading
+- [x] 🏥 **Health Monitoring**: Built-in health checks for production deployments
 
 > ✨ More features are being added with each release.
 
@@ -176,12 +179,12 @@ HubUI can be deployed in multiple ways to suit your needs.
 
 #### Using Docker Hub Image
 
-The easiest way to deploy HubUI is using our pre-built Docker image:
+The easiest way to deploy HubUI is using our official Docker image from Docker Hub:
 
 ```bash
 # Using Docker Compose (Recommended)
-curl -o docker-compose.yml https://raw.githubusercontent.com/enrell/hubui/main/docker-compose.production.yml
-docker-compose up -d
+curl -o docker-compose.production.yml https://raw.githubusercontent.com/enrellsa/hubui/main/docker-compose.production.yml
+docker-compose -f docker-compose.production.yml up -d
 ```
 
 ```bash
@@ -190,24 +193,17 @@ docker run -d \
   --name hubui \
   -p 3000:3000 \
   -e NODE_ENV=production \
+  -e HOSTNAME=0.0.0.0 \
   --restart unless-stopped \
+  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1" \
+  --health-interval=30s \
+  --health-timeout=10s \
+  --health-retries=3 \
+  --health-start-period=40s \
   enrellsa/hubui:latest
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to access HubUI.
-
-#### Building from Source
-
-For development or custom builds:
-
-```bash
-# Clone the repository
-git clone https://github.com/enrell/hubui.git
-cd hubui
-
-# Build and run with Docker Compose
-docker-compose up -d
-```
 
 ### 💻 Local Development
 
@@ -215,22 +211,76 @@ For local development and testing:
 
 ```bash
 # Clone the repository
-git clone https://github.com/enrell/hubui.git
+git clone https://github.com/enrellsa/hubui.git
 cd hubui
 
 # Install dependencies
-bun i
+bun install
 
 # Start the development server
 bun run dev
 ```
 
-````bash
-# Building
+```bash
+# Building for production
 bun run build
-````
+
+# Start the production server locally
+bun run start
+```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 🌐 Production Deployment
+
+HubUI is production-ready with the following deployment options:
+
+#### Docker Hub (Recommended for Production)
+
+Our official Docker image is available on Docker Hub with automatic health checks:
+
+```bash
+# Pull and run the latest version
+docker pull enrellsa/hubui:latest
+docker run -d \
+  --name hubui-prod \
+  -p 3000:3000 \
+  -e NODE_ENV=production \
+  --restart unless-stopped \
+  enrellsa/hubui:latest
+```
+
+#### Version Pinning
+
+For production stability, pin to specific versions:
+
+```bash
+# Use a specific version (recommended for production)
+docker run -d \
+  --name hubui-prod \
+  -p 3000:3000 \
+  -e NODE_ENV=production \
+  --restart unless-stopped \
+  enrellsa/hubui:v1.0
+```
+
+#### Updating in Production
+
+```bash
+# Stop the current container
+docker stop hubui-prod && docker rm hubui-prod
+
+# Pull the latest image
+docker pull enrellsa/hubui:latest
+
+# Start with the new image
+docker run -d \
+  --name hubui-prod \
+  -p 3000:3000 \
+  -e NODE_ENV=production \
+  --restart unless-stopped \
+  enrellsa/hubui:latest
+```
 
 <div align="right">
 
@@ -252,6 +302,8 @@ HubUI is built with modern web technologies:
 | [Next Themes](https://github.com/pacocoursey/next-themes) | Theme Management | ^0.4.6 |
 | [React Hook Form](https://react-hook-form.com/) | Form Management | ^7.56.4 |
 | [Zod](https://zod.dev/) | Schema Validation | ^3.25.30 |
+| [Bun](https://bun.sh/) | Runtime & Package Manager | Latest |
+| [Docker](https://www.docker.com/) | Containerization | Latest |
 
 <div align="right">
 
@@ -261,27 +313,45 @@ HubUI is built with modern web technologies:
 
 ## ⌨️ Development
 
-To contribute to HubUI:
+To contribute to HubUI or run it locally for development:
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/enrell/hubui.git
+git clone https://github.com/enrellsa/hubui.git
 cd hubui
 
-# Install dependencies
-bun i
+# Install dependencies with Bun (recommended)
+bun install
 
-# Start development server with Turbopack
-bun dev
+# Start development server with hot reload
+bun run dev
+
+# Run type checking
+bun run type-check
 
 # Run linting
-bun lint
+bun run lint
 
 # Build for production
 bun run build
 
 # Start the production server
 bun run start
+```
+
+### Docker Development
+
+For development with Docker:
+
+```bash
+# Build and run development environment
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Rebuild after changes
+docker-compose up -d --build
 ```
 
 <div align="right">
