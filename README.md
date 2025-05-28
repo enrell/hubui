@@ -7,7 +7,7 @@
 An open-source, service aggregator dashboard.<br/>
 Centralize all your local web services in one interface with iframes embedding.<br/>
 
-**English** · [Official Repository](https://github.com/enrellsa/hubui) · [Docker Hub](https://hub.docker.com/r/enrellsa/hubui) · [Changelog](https://github.com/enrellsa/hubui/releases) · [Documentation](https://github.com/enrellsa/hubui#-getting-started) · [Feedback](https://github.com/enrellsa/hubui/issues)
+**English** · [Official Site](https://github.com/enrell/hubui) · [Changelog](https://github.com/enrell/hubui/releases) · [Documentation](https://github.com/enrell/hubui#-getting-started) · [Feedback](https://github.com/enrell/hubui/issues)
 
 <!-- SHIELD GROUP -->
 
@@ -53,7 +53,6 @@ Centralize all your local web services in one interface with iframes embedding.<
   - [`A` Deploying with Vercel](#a-deploying-with-vercel)
   - [`B` Deploying with Docker](#b-deploying-with-docker)
   - [`C` Local Development](#c-local-development)
-  - [`D` Production Deployment](#d-production-deployment)
 - [🧩 Tech Stack](#-tech-stack)
 - [⌨️ Development](#️-development)
 - [🤝 Contributing](#-contributing)
@@ -156,12 +155,10 @@ Beyond the core features, HubUI includes:
 
 - [x] 🚀 **Lightning Fast**: Built with Next.js 15 and modern optimization techniques
 - [x] 🔒 **Security Focused**: Secure iframe sandboxing and CSP headers
-- [x] 🐳 **Docker Ready**: Official Docker image available on Docker Hub
 - [x] 📱 **PWA Ready**: Install as a progressive web app
 - [x] 🎨 **Customizable**: Easy theming and component customization
 - [x] 🔧 **Type Safe**: Full TypeScript support for reliability
 - [x] 📊 **Performance Optimized**: Server-side rendering and lazy loading
-- [x] 🏥 **Health Monitoring**: Built-in health checks for production deployments
 
 > ✨ More features are being added with each release.
 
@@ -175,112 +172,41 @@ Beyond the core features, HubUI includes:
 
 HubUI can be deployed in multiple ways to suit your needs.
 
-### 🐳 Quick Deploy with Docker (Recommended)
+### Setup with Docker
 
-#### Using Docker Hub Image
-
-The easiest way to deploy HubUI is using our official Docker image from Docker Hub:
+For self-hosting with Docker:
 
 ```bash
-# Using Docker Compose (Recommended)
-curl -o docker-compose.production.yml https://raw.githubusercontent.com/enrellsa/hubui/main/docker-compose.production.yml
-docker-compose -f docker-compose.production.yml up -d
+# Clone the repository
+git clone https://github.com/enrell/hubui.git
+cd hubui
+
+# Build the Docker image
+docker compose up -d
 ```
 
-```bash
-# Or using Docker Run
-docker run -d \
-  --name hubui \
-  -p 3000:3000 \
-  -e NODE_ENV=production \
-  -e HOSTNAME=0.0.0.0 \
-  --restart unless-stopped \
-  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1" \
-  --health-interval=30s \
-  --health-timeout=10s \
-  --health-retries=3 \
-  --health-start-period=40s \
-  enrellsa/hubui:latest
-```
-
-Visit [http://localhost:3000](http://localhost:3000) to access HubUI.
-
-### 💻 Local Development
+### Local Development
 
 For local development and testing:
 
 ```bash
 # Clone the repository
-git clone https://github.com/enrellsa/hubui.git
+git clone https://github.com/enrell/hubui.git
 cd hubui
 
 # Install dependencies
-bun install
+bun i
 
 # Start the development server
 bun run dev
 ```
 
-```bash
-# Building for production
+````bash
+# Building
 bun run build
-
-# Start the production server locally
-bun run start
-```
+````
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### 🌐 Production Deployment
-
-HubUI is production-ready with the following deployment options:
-
-#### Docker Hub (Recommended for Production)
-
-Our official Docker image is available on Docker Hub with automatic health checks:
-
-```bash
-# Pull and run the latest version
-docker pull enrellsa/hubui:latest
-docker run -d \
-  --name hubui-prod \
-  -p 3000:3000 \
-  -e NODE_ENV=production \
-  --restart unless-stopped \
-  enrellsa/hubui:latest
-```
-
-#### Version Pinning
-
-For production stability, pin to specific versions:
-
-```bash
-# Use a specific version (recommended for production)
-docker run -d \
-  --name hubui-prod \
-  -p 3000:3000 \
-  -e NODE_ENV=production \
-  --restart unless-stopped \
-  enrellsa/hubui:v1.0
-```
-
-#### Updating in Production
-
-```bash
-# Stop the current container
-docker stop hubui-prod && docker rm hubui-prod
-
-# Pull the latest image
-docker pull enrellsa/hubui:latest
-
-# Start with the new image
-docker run -d \
-  --name hubui-prod \
-  -p 3000:3000 \
-  -e NODE_ENV=production \
-  --restart unless-stopped \
-  enrellsa/hubui:latest
-```
 
 <div align="right">
 
@@ -302,8 +228,6 @@ HubUI is built with modern web technologies:
 | [Next Themes](https://github.com/pacocoursey/next-themes) | Theme Management | ^0.4.6 |
 | [React Hook Form](https://react-hook-form.com/) | Form Management | ^7.56.4 |
 | [Zod](https://zod.dev/) | Schema Validation | ^3.25.30 |
-| [Bun](https://bun.sh/) | Runtime & Package Manager | Latest |
-| [Docker](https://www.docker.com/) | Containerization | Latest |
 
 <div align="right">
 
@@ -313,45 +237,27 @@ HubUI is built with modern web technologies:
 
 ## ⌨️ Development
 
-To contribute to HubUI or run it locally for development:
+To contribute to HubUI:
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/enrellsa/hubui.git
+git clone https://github.com/yourusername/hubui.git
 cd hubui
 
-# Install dependencies with Bun (recommended)
-bun install
+# Install dependencies
+bun i
 
-# Start development server with hot reload
-bun run dev
-
-# Run type checking
-bun run type-check
+# Start development server with Turbopack
+bun dev
 
 # Run linting
-bun run lint
+bun lint
 
 # Build for production
 bun run build
 
 # Start the production server
 bun run start
-```
-
-### Docker Development
-
-For development with Docker:
-
-```bash
-# Build and run development environment
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Rebuild after changes
-docker-compose up -d --build
 ```
 
 <div align="right">
@@ -364,8 +270,8 @@ docker-compose up -d --build
 
 We welcome contributions of all types! Here's how you can help:
 
-- 🐛 **Bug Reports**: Found an issue? [Open a bug report](https://github.com/enrellsa/hubui/issues/new?template=bug_report.md)
-- 💡 **Feature Requests**: Have an idea? [Suggest a feature](https://github.com/enrellsa/hubui/issues/new?template=feature_request.md)
+- 🐛 **Bug Reports**: Found an issue? [Open a bug report](https://github.com/enrell/hubui/issues/new?template=bug_report.md)
+- 💡 **Feature Requests**: Have an idea? [Suggest a feature](https://github.com/enrell/hubui/issues/new?template=feature_request.md)
 - 📝 **Documentation**: Help improve our docs
 - 🔧 **Code**: Submit pull requests for bug fixes or new features
 
@@ -399,23 +305,23 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 **Built with ❤️**
 
-[⭐ Star on GitHub](https://github.com/enrellsa/hubui) • [🐛 Report Bug](https://github.com/enrellsa/hubui/issues) • [💡 Request Feature](https://github.com/enrellsa/hubui/issues)
+[⭐ Star on GitHub](https://github.com/enrell/hubui) • [🐛 Report Bug](https://github.com/enrell/hubui/issues) • [💡 Request Feature](https://github.com/enrell/hubui/issues)
 
 </div>
 
 <!-- LINK GROUP -->
 
 [back-to-top]: https://img.shields.io/badge/-BACK_TO_TOP-151515?style=flat-square
-[github-release-shield]: https://img.shields.io/github/v/release/enrellsa/hubui?color=369eff&labelColor=black&logo=github&style=flat-square
-[github-release-link]: https://github.com/enrellsa/hubui/releases
-[github-stars-shield]: https://img.shields.io/github/stars/enrellsa/hubui?color=ffcb47&labelColor=black&style=flat-square
-[github-stars-link]: https://github.com/enrellsa/hubui/network/stargazers
-[github-forks-shield]: https://img.shields.io/github/forks/enrellsa/hubui?color=8ae8ff&labelColor=black&style=flat-square
-[github-forks-link]: https://github.com/enrellsa/hubui/network/members
-[github-issues-shield]: https://img.shields.io/github/issues/enrellsa/hubui?color=ff80eb&labelColor=black&style=flat-square
-[github-issues-link]: https://github.com/enrellsa/hubui/issues
+[github-release-shield]: https://img.shields.io/github/v/release/enrell/hubui?color=369eff&labelColor=black&logo=github&style=flat-square
+[github-release-link]: https://github.com/enrell/hubui/releases
+[github-stars-shield]: https://img.shields.io/github/stars/enrell/hubui?color=ffcb47&labelColor=black&style=flat-square
+[github-stars-link]: https://github.com/enrell/hubui/network/stargazers
+[github-forks-shield]: https://img.shields.io/github/forks/enrell/hubui?color=8ae8ff&labelColor=black&style=flat-square
+[github-forks-link]: https://github.com/enrell/hubui/network/members
+[github-issues-shield]: https://img.shields.io/github/issues/enrell/hubui?color=ff80eb&labelColor=black&style=flat-square
+[github-issues-link]: https://github.com/enrell/hubui/issues
 [github-license-shield]: https://img.shields.io/badge/license-MIT-white?labelColor=black&style=flat-square
-[github-license-link]: https://github.com/enrellsa/hubui/blob/main/LICENSE
+[github-license-link]: https://github.com/enrell/hubui/blob/main/LICENSE
 [typescript-shield]: https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white&labelColor=black
 [typescript-link]: https://www.typescriptlang.org/
 [nextjs-shield]: https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white&labelColor=black
