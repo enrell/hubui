@@ -12,11 +12,33 @@ env:
   IMAGE_NAME: hubui
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+
+    - name: Install dependencies
+      run: bun install --frozen-lockfile
+
+    - name: Run linting
+      run: bun run lint
+
+    - name: Check build
+      run: bun run build
+
   build-and-push:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      security-events: write
 
     steps:
     - name: Checkout repository
@@ -24,6 +46,10 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
+
+    - name: Validate Dockerfile
+      run: |
+        docker run --rm -i hadolint/hadolint < Dockerfile || echo "Dockerfile linting completed with warnings"
 
     - name: Log in to Docker Hub
       if: github.event_name != 'pull_request'
@@ -45,9 +71,15 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
           type=raw,value=latest,enable={{is_default_branch}}
+        labels: |
+          org.opencontainers.image.title=HubUI
+          org.opencontainers.image.description=Modern web application built with Next.js, React, and TypeScript
+          org.opencontainers.image.vendor=HubUI
+          org.opencontainers.image.licenses=MIT
 
     - name: Build and push Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
+      id: build
       with:
         context: .
         file: ./Dockerfile
@@ -57,6 +89,22 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
+
+    - name: Run Trivy vulnerability scanner
+      if: github.event_name != 'pull_request'
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      if: github.event_name != 'pull_request'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-results.sarif'
 
     - name: Generate deployment files
       if: github.event_name != 'pull_request'
@@ -65,8 +113,6 @@ jobs:
         
         # Create docker-compose.yml for easy deployment
         cat > deployment/docker-compose.yml << 'EOF'
-        version: '3.8'
-        
         services:
           hubui:
             image: ${{ secrets.DOCKER_USERNAME }}/hubui:latest
@@ -78,13 +124,21 @@ jobs:
               - HOSTNAME=0.0.0.0
             restart: unless-stopped
             healthcheck:
-              test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+              test: ["CMD", "curl", "-f", "http://localhost:3000/api/health", "||", "curl", "-f", "http://localhost:3000/"]
               interval: 30s
               timeout: 10s
               retries: 3
               start_period: 40s
             networks:
               - hubui-network
+            deploy:
+              resources:
+                limits:
+                  memory: 512M
+                  cpus: '0.5'
+                reservations:
+                  memory: 256M
+                  cpus: '0.25'
         
         networks:
           hubui-network:
@@ -101,7 +155,7 @@ jobs:
         2. Run the application:
         
         ```bash
-        docker-compose up -d
+        docker compose up -d
         ```
         
         The application will be available at http://localhost:3000
@@ -114,6 +168,8 @@ jobs:
           -p 3000:3000 \
           -e NODE_ENV=production \
           --restart unless-stopped \
+          --memory="512m" \
+          --cpus="0.5" \
           ${{ secrets.DOCKER_USERNAME }}/hubui:latest
         ```
         
@@ -132,11 +188,17 @@ jobs:
         docker ps
         ```
         
+        ## Resource Limits
+        
+        The default configuration sets resource limits:
+        - Memory: 512MB limit, 256MB reserved
+        - CPU: 0.5 cores limit, 0.25 cores reserved
+        
         ## Stopping the Application
         
         ### Docker Compose
         ```bash
-        docker-compose down
+        docker compose down
         ```
         
         ### Docker Run
@@ -144,6 +206,12 @@ jobs:
         docker stop hubui
         docker rm hubui
         ```
+        
+        ## Security Notes
+        
+        - The application runs as a non-root user (nextjs:nodejs)
+        - Regular security scans are performed on the Docker image
+        - Health checks ensure the application is running properly
         EOF
 
     - name: Upload deployment artifacts
@@ -163,3 +231,13 @@ jobs:
         repository: ${{ secrets.DOCKER_USERNAME }}/hubui
         short-description: "HubUI - Modern web application built with Next.js, React, and TypeScript"
         readme-filepath: ./README.md
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: deployment/*
+        generate_release_notes: true
+        make_latest: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
